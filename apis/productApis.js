@@ -3,7 +3,7 @@ const Product = require('../model/Product')
 
 const product_all = async (req, res) => {
     try {
-        const product = await Product.find()
+        const product = await Product.find().sort({ p_id: 1 })
         console.log(`Data sent`);
         res.json(product)
     } catch (error) {
@@ -15,7 +15,12 @@ const insert_product = async (req, res) => {
     const product = new Product({
         p_id: req.body.p_id,
         p_name: req.body.p_name,
+        p_cat: req.body.p_cat,
+        p_img: req.body.p_img,
+        p_desc: req.body.p_desc,
+        p_gst: req.body.p_gst,
         p_cost: req.body.p_cost,
+
     })
     try {
         const saveProduct = await product.save()
@@ -32,12 +37,16 @@ const update_product = async (req, res) => {
     let p_id = req.body.p_id
     const product = {
         p_name: req.body.p_name,
-        p_cost: req.body.p_cost
+        p_cat: req.body.p_cat,
+        p_img: req.body.p_img,
+        p_desc: req.body.p_desc,
+        p_gst: req.body.p_gst,
+        p_cost: req.body.p_cost,
     }
 
     try {
         const updateProduct = await Product.updateOne({ p_id }, product)
-        if (updateProduct.modifiedCount != 0 || updateProduct.matchedCount !=0) {
+        if (updateProduct.modifiedCount != 0 || updateProduct.matchedCount != 0) {
             console.log("Product Updated")
             res.json({ 'update': 'Success' })
         }
@@ -49,23 +58,23 @@ const update_product = async (req, res) => {
         res.status(400).send(error)
     }
 }
-const delete_product = async (req,res) => {
+const delete_product = async (req, res) => {
     let p_id = req.body.p_id
-    try{
-        const deleteProduct = await Product.deleteOne({p_id})
-        if(deleteProduct.deletedCount != 0 ){
+    try {
+        const deleteProduct = await Product.deleteOne({ p_id })
+        if (deleteProduct.deletedCount != 0) {
             console.log("Product Deleted");
-            res.json({"message":"deleted"})
+            res.json({ "message": "deleted" })
         }
-        else{
+        else {
             console.log("record not found");
-            res.send({"message":"record not found"})
-            
+            res.send({ "message": "record not found" })
+
         }
     }
-    catch(error){
-        console.log("Delete Error",error);
-        res.send({"message":error})
+    catch (error) {
+        console.log("Delete Error", error);
+        res.send({ "message": error })
     }
 }
 
